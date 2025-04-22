@@ -100,6 +100,7 @@ def adjust_heading(data, mode="unworldlock"):
             headval = headvals[headi]['value']
             # calculate the yaw adjustment needed using the calculation true heading - World Lock heading
             d_headval = headval - world_lock_headval
+            print("framei:", framei, "headi:", headi, "headval:", headval, "world_lock_headval:", world_lock_headval, "delta_headval:", d_headval)
             if d_headval > 180 :
                 d_headval -= 360
             elif d_headval < -180 :
@@ -129,29 +130,29 @@ def adjust_heading(data, mode="unworldlock"):
         f.write("file '%s'\n" % os.path.join(work_dir, frame))
     f.close()
 
-    out_filename = video_filename.split(".")
-    out_filename.insert(-1, f"-{mode}")
-    out_filename.pop()
-    out_file = os.path.join(video_dir, "%s.mp4"%(''.join(out_filename)))
-    tmp_file = os.path.join(video_dir, "__tmp.mp4")
+    # out_filename = video_filename.split(".")
+    # out_filename.insert(-1, f"-{mode}")
+    # out_filename.pop()
+    # out_file = os.path.join(video_dir, "%s.mp4"%(''.join(out_filename)))
+    # tmp_file = os.path.join(video_dir, "__tmp.mp4")
 
-    copy_stream_str = ""
-    for i in copy_stream_indices:
-        copy_stream_str += f'-map 1:{i} -c copy '
+    # copy_stream_str = ""
+    # for i in copy_stream_indices:
+    #     copy_stream_str += f'-map 1:{i} -c copy '
 
-    compile_video_cmd = f'ffmpeg -y -hide_banner -loglevel error -r {frame_rate_str} -f concat -safe 0 -i images.txt -c:v libx264 -vf "fps={frame_rate_str},format=yuv420p" {tmp_file}'
-    print("Compiling video:", compile_video_cmd)
-    os.system(compile_video_cmd)
+    # compile_video_cmd = f'ffmpeg -y -hide_banner -loglevel error -r {frame_rate_str} -f concat -safe 0 -i images.txt -c:v libx264 -vf "fps={frame_rate_str},format=yuv420p" {tmp_file}'
+    # print("Compiling video:", compile_video_cmd)
+    # os.system(compile_video_cmd)
     
-    copy_stream_cmd = f'ffmpeg -y -hide_banner -loglevel error -i {tmp_file} -i {os.path.join(video_dir, video_filename)} -map 0:v -c copy {copy_stream_str} {out_file}'
-    print("Copying original streams:", copy_stream_cmd)
-    os.system(copy_stream_cmd)
+    # copy_stream_cmd = f'ffmpeg -y -hide_banner -loglevel error -i {tmp_file} -i {os.path.join(video_dir, video_filename)} -map 0:v -c copy {copy_stream_str} {out_file}'
+    # print("Copying original streams:", copy_stream_cmd)
+    # os.system(copy_stream_cmd)
 
-    copy_metadata_cmd = 'exiftool -TagsFromFile %s "-all:all>all:all" %s'%(os.path.join(video_dir, video_filename), out_file)
-    print("Copying metadata:", copy_metadata_cmd)
-    os.system(copy_metadata_cmd)
+    # copy_metadata_cmd = 'exiftool -TagsFromFile %s "-all:all>all:all" %s'%(os.path.join(video_dir, video_filename), out_file)
+    # print("Copying metadata:", copy_metadata_cmd)
+    # os.system(copy_metadata_cmd)
 
-    os.remove('images.txt')
-    os.remove(tmp_file)
-    shutil.rmtree(work_dir)
-    shutil.rmtree(extract_dir)
+    # os.remove('images.txt')
+    # os.remove(tmp_file)
+    # shutil.rmtree(work_dir)
+    # shutil.rmtree(extract_dir)
